@@ -1,18 +1,23 @@
 package com.ucberkeley.android.locationchecker;
 
+import java.util.Calendar;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.ucberkeley.android.locationchecker.R;
 import com.ucberkeley.android.locationchecker.ActivityUtils.REQUEST_TYPE;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class LocationCheckerMainActivity extends Activity {
-	
+public class MainActivity extends Activity {
+
 	// Store the current request type (ADD or REMOVE)
 	private REQUEST_TYPE mRequestType;
 
@@ -36,6 +41,32 @@ public class LocationCheckerMainActivity extends Activity {
 		// Get detection requester and remover objects
 		mDetectionRequester = new DetectionRequester(this);
 		mDetectionRemover = new DetectionRemover(this);
+
+		// Set time to trigger service
+		Calendar onDayTime = Calendar.getInstance();
+		onDayTime.set(Calendar.HOUR_OF_DAY, 7);
+		onDayTime.set(Calendar.MINUTE, 0);
+		onDayTime.set(Calendar.SECOND, 0);
+
+		Calendar onNightTime = Calendar.getInstance();
+		onNightTime.set(Calendar.HOUR_OF_DAY, 23);
+		onNightTime.set(Calendar.MINUTE, 59);
+		onNightTime.set(Calendar.SECOND, 59);
+
+		Intent dayStartIntent = new Intent(this, AlarmReceiver.class);
+		dayStartIntent.putExtra("ALARM_TYPE", "DAY_START");
+
+		PendingIntent daySender = PendingIntent.getBroadcast(this,0,dayStartIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+		AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, onDayTime.getTimeInMillis(),
+				AlarmManager.INTERVAL_DAY, daySender);
+
+
+		Intent nightStartIntent = new Intent(this, AlarmReceiver.class);
+		nightStartIntent.putExtra("ALARM_TYPE", "NIGHT_START");
+		PendingIntent nightSender = PendingIntent.getBroadcast(this,1,nightStartIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, onNightTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, nightSender);	
 	}
 
 	/*
@@ -93,6 +124,7 @@ public class LocationCheckerMainActivity extends Activity {
 			break;
 		}
 	}
+	
 	/**
 	 * Verify that Google Play services is available before making a request.
 	 *
@@ -172,12 +204,12 @@ public class LocationCheckerMainActivity extends Activity {
 		 */
 		mDetectionRequester.getRequestPendingIntent().cancel();
 	}
-	
+
 	public void onStartLocationUpdates(View view) {
 		Intent service = new Intent(this, LocationUpdateService.class);
 		this.startService(service); 
 	}
-	
+
 	public void onStopLocationUpdates(View view) {
 		Intent service = new Intent(this, LocationUpdateService.class);
 		this.stopService(service);

@@ -1,29 +1,4 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.ucberkeley.android.locationchecker;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import android.content.Context;
-import android.location.Location;
-import android.os.Environment;
 
 /**
  * Defines app-wide constants and utilities
@@ -54,62 +29,20 @@ public final class LocationUtils {
     public static final int MILLISECONDS_PER_SECOND = 1000;
 
     // The update interval
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
+    public static final int DAYTIME_UPDATE_INTERVAL_IN_SECONDS = 30;
+    public static final int NIGHTTIME_UPDATE_INTERVAL_IN_SECONDS = 1200;
 
     // A fast interval ceiling
     public static final int FAST_CEILING_IN_SECONDS = 1;
 
     // Update interval in milliseconds
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS =
-            MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
+    public static final long DAYTIME_UPDATE_INTERVAL_IN_MILLISECONDS =
+            MILLISECONDS_PER_SECOND * DAYTIME_UPDATE_INTERVAL_IN_SECONDS;
+    public static final long NIGHTTIME_UPDATE_INTERVAL_IN_MILLISECONDS =
+            MILLISECONDS_PER_SECOND * NIGHTTIME_UPDATE_INTERVAL_IN_SECONDS;
 
     // A fast ceiling of update intervals, used when the app is visible
     public static final long FAST_INTERVAL_CEILING_IN_MILLISECONDS =
             MILLISECONDS_PER_SECOND * FAST_CEILING_IN_SECONDS;
 
-    // Create an empty string for initializing strings
-    public static final String EMPTY_STRING = new String();
-
-    /**
-     * Get the latitude and longitude from the Location object returned by
-     * Location Services.
-     *
-     * @param currentLocation A Location object containing the current location
-     * @return The latitude and longitude of the current location, or null if no
-     * location is available.
-     */
-    public static void getLatLng(Context context, Location currentLocation) {
-        // If the location is valid
-        if (currentLocation != null) {
-        	double lat = currentLocation.getLatitude();
-            double lon = currentLocation.getLongitude();
-            long time = currentLocation.getTime();
-            float error = currentLocation.getAccuracy();
-            String data = new String(time + "\t\t" + lat + "\t\t" + lon + "\t\t" + error + "\n");
-        	//Save geo data to a file
-        	File locationLogFolder = new File(Environment.getExternalStorageDirectory(), "/LocationUpdate");
-        	if (!locationLogFolder.exists()) {
-        		locationLogFolder.mkdir();
-        	}
-        	File logFile = new File (locationLogFolder.getAbsolutePath(), "log.txt");
-        	if (!logFile.exists()) {
-        		try {
-					logFile.createNewFile();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        	
-        	try {
-				FileWriter fw = new FileWriter(logFile, true);
-				BufferedWriter out = new BufferedWriter(fw);
-				out.write(data);
-				out.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-       }
-    }
 }

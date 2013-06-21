@@ -28,6 +28,22 @@ public class LocationUpdateService extends Service implements LocationListener,
 
 	// Stores the current instantiation of the location client in this object
 	private LocationClient mLocationClient;
+	
+	// Update time interval
+	private long timeInterval = 0;
+	
+	@Override
+	public int onStartCommand (Intent intent, int flags, int startId) {
+		Bundle bundle = intent.getExtras();
+		if (bundle != null) {
+			timeInterval = (Long) bundle.get("UPDATE_INTERVAL"); 
+		}
+		else {
+			timeInterval = LocationUtils.DAYTIME_UPDATE_INTERVAL_IN_MILLISECONDS;
+		}
+	    
+	    return Service.START_STICKY;
+	}
 
 	@Override
 	public void onCreate() {
@@ -35,11 +51,11 @@ public class LocationUpdateService extends Service implements LocationListener,
 
 		// Create a new global location parameters object
 		mLocationRequest = LocationRequest.create();
-
+		
 		/*
 		 * Set the update interval
 		 */
-		mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+		mLocationRequest.setInterval(timeInterval);
 
 		// Use high accuracy
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -54,39 +70,43 @@ public class LocationUpdateService extends Service implements LocationListener,
 		mLocationClient = new LocationClient(this, this, this);
 		mLocationClient.connect();
 	}
+	
 	@Override
 	public void onConnectionFailed(ConnectionResult arg0) {
-		// TODO Auto-generated method stub
 		Log.d(TAG, "onConnectionFailed");
 		mLocationClient.connect();
 	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// TODO Auto-generated method stub
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
 	}
 
 	@Override
 	public void onDisconnected() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		String log = location.getTime()
-				+"\t"+location.getLatitude()
-				+"\t"+location.getLongitude()
-				+"\t"+location.getAccuracy();
+		StringBuilder sb = new StringBuilder("{location:{");
+		sb.append("time:").append(location.getTime()).append(",");
+		sb.append("alt:").append(location.getAltitude()).append(",");
+		sb.append("lat:").append(location.getLatitude()).append(",");
+		sb.append("long:").append(location.getLongitude()).append(",");
+		sb.append("speed:").append(location.getSpeed()).append(",");
+		sb.append("error:").append(location.getAccuracy());
+		sb.append("}}");
+		
+		String log = sb.toString();
 		Log.d(TAG, "Location: " + log);
-		File f = new File(Environment.getExternalStorageDirectory(),"locations.txt");
+		File f = new File(Environment.getExternalStorageDirectory(),"tracker.txt");
 		try{ 
 			if (!f.exists()) {
 				f.createNewFile();
 			}
 			FileWriter out = new FileWriter(f,true);
-			out.write(log+"\n");
+			out.write(log + "\n");
 			out.close();
 		}catch (Exception e) {
 			return;
@@ -95,16 +115,16 @@ public class LocationUpdateService extends Service implements LocationListener,
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 	/*
 	 * Called when the Activity is no longer visible at all.
 	 * Stop updates and disconnect.
 	 */
 	@Override
 	public void onDestroy() {
-
 		// If the client is connected
 		if (mLocationClient.isConnected()) {
 			mLocationClient.removeLocationUpdates(this);
@@ -112,9 +132,6 @@ public class LocationUpdateService extends Service implements LocationListener,
 
 		// After disconnect() is called, the client is considered "dead".
 		mLocationClient.disconnect();
-
 		super.onDestroy();
 	}
-
-
 }

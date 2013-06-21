@@ -60,7 +60,10 @@ public class ActivityRecognitionIntentService extends IntentService {
 	 * @param result The result extracted from the incoming Intent
 	 */
 	private void logActivityRecognitionResult(ActivityRecognitionResult result) {
-		StringBuilder data = new StringBuilder("{");
+		long timeStamp = (new Date()).getTime();
+		StringBuilder sb = new StringBuilder("{activity:{");
+		sb.append("time:").append(timeStamp).append(",");
+		
 		// Get all the probably activities from the updated result
 		for (DetectedActivity detectedActivity : result.getProbableActivities()) {
 
@@ -71,12 +74,12 @@ public class ActivityRecognitionIntentService extends IntentService {
 
 			// Get the probability for each activity
 			String actProb = activityName + ":" + confidence;   
-			data.append(actProb).append(",");
+			sb.append(actProb).append(",");
 		}
-		data.append("}");
-		long timeStamp = (new Date()).getTime();
-		String log = timeStamp + " " +  data.toString();
-		File f = new File(Environment.getExternalStorageDirectory(),"activities.txt");
+		sb.append("}}");
+		
+		String log = sb.toString();
+		File f = new File(Environment.getExternalStorageDirectory(),"tracker.txt");
 		try{ 
 			if (!f.exists()) {
 				f.createNewFile();
