@@ -7,61 +7,6 @@
     <string name="app_description">Check and update current location and activity then log them</string>
 
     <!-- User interface labels and strings -->
-    <string name="start_location_update">Start Location Update</string>
-    <string name="stop_location_update">Stop Location Update</string>
-    <string name="show_location_log">Show Location Log</string>
-    <string name="start_activity_update">Start Activity Updates</string>
-    <string name="stop_activity_update">Stop Activity Updates</string>
-    <string name="show_activity_log">Show Activity Log</string>
-
-    <!-- Messages -->
-    <string name="activity_connected">Connected to Location Services</string>
-    <string name="activity_disconnected">Disconnected from Location Services</string>
-    <string name="activity_connection_failed">Connection to service failed: error code %1$d</string>
-    <string name="log_file_deletion_error">Log file deletion error.</string>
-    <string name="notification_title">You are moving</string>
-    <string name="turn_on_GPS">Click to turn on GPS, or swipe to ignore</string>
-    <string name="activity_updates_requested">Activity updates requested</string>
-    <string name="service_not_connected">Not connected to Location Services</string>
-    <string name="activity_updates_stop">Stopping activity update requests</string>
-    <string name="log_message">Log: timestamp: %1$s type %2$s confidence %3$d</string>
-    <string name="menu_item_clearlog">Clear Log</string>
-    <string name="menu_item_showlog">Show Log</string>
-    <string name="logs_deleted">Log file(s) deleted</string>
-    <string name="activity_invalid_action">Invalid action received. See error log for details.</string>
-    <string name="invalid_action_detail">Invalid action %1$s received.</string>
-    <string name="no_log_data">No log data is available</string>
-    <string name="activity_recognition_error_detail">Activity recognition error, code %1$d message %2$s.</string>
-    <string name="date_format_error">Internal error: date formatting exception.</string>
-    <string name="log_filename">%1$s%2$s%3$d%4$s</string>
-    <string name="connected">Client connected</string>
-    <string name="connection_error_code_unknown">Unknown connection error code:  %1$d</string>
-    <string name="connection_failed">Connection failed</string>
-    <string name="disconnected">Client disconnected</string>
-    <string name="get_address">Get Address</string>
-    <string name="get_location">Get Location</string>
-    <string name="illegal_argument_exception">Illegal arguments: Latitude %1$.8f Longitude %2$.8f</string>
-    <string name="invalid_action">Invalid intent action %1$s</string>
-    <string name="invalid_integer_id">Invalid integer request ID: %1$s</string>
-    <string name="IO_Exception_getFromLocation">IO Exception in Geocoder.getFromLocation()</string>
-    <string name="location_requested">Periodic updates requested</string>
-    <string name="location_updated">Location updated</string>
-    <string name="location_update_error">Location update failed</string>
-    <string name="location_update_error_detail">Location update error. code %1$d message %2$s</string>
-    <string name="location_update_missing_update">Location update error. No incoming location.</string>
-    <string name="location_updates_stopped">Periodic updates stopped</string>
-    <string name="log_new_location">New location: %1$s</string>
-    <string name="no_address_found">No address found for location</string>
-    <string name="no_connection">No connection: Cannot request location</string>
-    <string name="no_geocoder_available">Cannot get address. No geocoder available.</string>
-    <string name="no_location_available">Location not available</string>
-    <string name="resolved">Error resolved. Please re-try operation.</string>
-    <string name="no_resolution">Google Play services: unable to resolve connection error.</string>
-    <string name="periodic_update_stop">Stopping periodic updates</string>
-    <string name="play_services_available">Google Play services is available</string>
-    <string name="request_location_updates_in_progress">Can\'t request location updates, previous request hasn\'t finished</string>
-    <string name="start_updates">Start Updates</string>
-    <string name="stop_updates">Stop Updates</string>
-    <string name="unknown">--Unknown--</string>
-    <string name="unknown_activity_request_code">Received an unknown activity request code %1$d in onActivityResult.</string>
+    <string name="start_service">Start</string>
+    <string name="stop_service">Stop</string>
 </resources>

@@ -31,7 +31,9 @@
 
         <service android:name="com.ucberkeley.android.locationchecker.ActivityRecognitionIntentService" >
         </service>
-        <service android:name="com.ucberkeley.android.locationchecker.LocationUpdateService" >
+        <service android:name="com.ucberkeley.android.locationchecker.LocationUpdateIntentService" >
+        </service>
+        <service android:name="com.ucberkeley.android.locationchecker.MainService" >
         </service>
 
         <receiver

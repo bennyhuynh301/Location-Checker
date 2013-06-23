@@ -1,10 +1,5 @@
 package com.ucberkeley.android.locationchecker;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.ActivityRecognitionClient;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,16 +7,20 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 
-public class DetectionRemover
-        implements ConnectionCallbacks, OnConnectionFailedListener {
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+
+public class LocationUpdateRemover  implements ConnectionCallbacks, OnConnectionFailedListener {
 
     private Context mContext;
-    private ActivityRecognitionClient mActivityRecognitionClient;
+    private LocationClient mLocationClient;
     private PendingIntent mCurrentIntent;
 
-    public DetectionRemover(Context context) {
+    public LocationUpdateRemover(Context context) {
         mContext = context;
-        mActivityRecognitionClient = null;
+        mLocationClient = null;
     }
 
     public void removeUpdates(PendingIntent requestIntent) {
@@ -30,23 +29,23 @@ public class DetectionRemover
     }
 
     private void requestConnection() {
-        getActivityRecognitionClient().connect();
+        getLocationClient().connect();
     }
 
-    public ActivityRecognitionClient getActivityRecognitionClient() {
-        if (mActivityRecognitionClient == null) {
-            setActivityRecognitionClient(new ActivityRecognitionClient(mContext, this, this));
+    public LocationClient getLocationClient() {
+        if (mLocationClient == null) {
+            setLocationClient(new LocationClient(mContext, this, this));
         }
-        return mActivityRecognitionClient;
+        return mLocationClient;
     }
 
     private void requestDisconnection() {
-        getActivityRecognitionClient().disconnect();
-        setActivityRecognitionClient(null);
+        getLocationClient().disconnect();
+        setLocationClient(null);
     }
 
-    public void setActivityRecognitionClient(ActivityRecognitionClient client) {
-        mActivityRecognitionClient = client;
+    public void setLocationClient(LocationClient client) {
+        mLocationClient = client;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class DetectionRemover
     }
 
     private void continueRemoveUpdates() {
-        mActivityRecognitionClient.removeActivityUpdates(mCurrentIntent);
+        mLocationClient.removeLocationUpdates(mCurrentIntent);
         mCurrentIntent.cancel();
         requestDisconnection();
     }
@@ -64,7 +63,7 @@ public class DetectionRemover
     @Override
     public void onDisconnected() {
         Log.d(ActivityUtils.APPTAG, "Dectection client disconnected");
-        mActivityRecognitionClient = null;
+        mLocationClient = null;
     }
 
     @Override

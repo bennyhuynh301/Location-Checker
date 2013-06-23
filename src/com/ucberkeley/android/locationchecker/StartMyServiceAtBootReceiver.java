@@ -7,19 +7,28 @@ import android.content.Context;
 import android.content.Intent;
 
 public class StartMyServiceAtBootReceiver extends BroadcastReceiver {
+	
+	private DetectionRequester mDetectionRequester;
+	private LocationUpdateRequester mLocationUpdateRequester;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		
+		mDetectionRequester = new DetectionRequester(context);
+		mLocationUpdateRequester = new LocationUpdateRequester(context);
+		
 		if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
 			if (isNowBetweenDayTime()) {
-				Intent newIntent = new Intent(context, LocationUpdateService.class);
-				newIntent.putExtra("UPDATE_INTERVAL", LocationUtils.DAYTIME_UPDATE_INTERVAL_IN_MILLISECONDS);
-				context.startService(newIntent);
+				mDetectionRequester.setUpdateTimeInterval(ActivityUtils.DAYTIME_DETECTION_INTERVAL_MILLISECONDS);
+				mDetectionRequester.requestUpdates();
+				mLocationUpdateRequester.setUpdateTimeInterval(LocationUtils.DAYTIME_UPDATE_INTERVAL_IN_MILLISECONDS);
+				mLocationUpdateRequester.requestUpdates();
 			}
 			else {
-				Intent newIntent = new Intent(context, LocationUpdateService.class);
-				newIntent.putExtra("UPDATE_INTERVAL", LocationUtils.NIGHTTIME_UPDATE_INTERVAL_IN_MILLISECONDS);
-				context.startService(newIntent);
+				mDetectionRequester.setUpdateTimeInterval(ActivityUtils.NIGHTTIME_DETECTION_INTERVAL_MILLISECONDS);
+				mDetectionRequester.requestUpdates();
+				mLocationUpdateRequester.setUpdateTimeInterval(LocationUtils.NIGHTTIME_UPDATE_INTERVAL_IN_MILLISECONDS);
+				mLocationUpdateRequester.requestUpdates();
 			}
 		}
 	}
@@ -39,5 +48,4 @@ public class StartMyServiceAtBootReceiver extends BroadcastReceiver {
 		Calendar curr = Calendar.getInstance();
 		return curr.after(start) && curr.before(end);
 	}
-
 }
